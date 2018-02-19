@@ -1,28 +1,30 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package rlstats.api.server;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
 import rlstats.api.classes.Statistic;
 
 /**
  *
  * @author Adrian
  */
-@WebServlet(name = "Player", urlPatterns = {"/Player"})
-public class Player extends HttpServlet {
+@WebServlet(name = "Season", urlPatterns = {"/Season"})
+public class Season extends HttpServlet {
+
 
     Statistic s = new Statistic();
 
@@ -39,9 +41,6 @@ public class Player extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/javascript");
-        PrintWriter out = response.getWriter();
-        out.print(s.getStatistics("adriansaenz15995", "Steam", 7, 11));
-        out.flush();
     }
 
     /**
@@ -55,7 +54,6 @@ public class Player extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/javascript");
         String json = "";
         PrintWriter out = response.getWriter();
         try {
@@ -66,7 +64,10 @@ public class Player extends HttpServlet {
         }
         JsonElement e = new JsonParser().parse(json);
         JsonObject o = e.getAsJsonObject();
-        out.print(s.getStatistics(o.get("nickname").getAsString(), o.get("platform").getAsString()));
+        out.print(s.getStatistics(o.get("nickname").getAsString(), 
+                                  o.get("platform").getAsString(), 
+                                  o.get("season").getAsInt(),
+                                  o.get("typeMatch").getAsInt()));
         out.flush();
     }
     
